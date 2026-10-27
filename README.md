@@ -1,23 +1,27 @@
 # aew-demo-target
 
-This repository serves as a simple target for demos and testing workflows.
+Demo repository for the Agentic Engineering Workspace (Open Agent Hackathon 2026).
+The workspace's agent changes this repository in an isolated sandbox and
+delivers its work as pull requests. It is throwaway: do not use it for anything else.
 
-## Purpose
+## Scenario: REQ-001, activate only after payment confirmation
 
-- Provide a lightweight repository for automation, evaluation, and demo scenarios
-- Act as a clean baseline for repository analysis and content generation tasks
-- Keep the project structure minimal and easy to extend
+A subscription becomes ACTIVE only when its payment is confirmed.
 
-## Repository status
+| AC | Rule | Test |
+|---|---|---|
+| AC-001 | A failed or unconfirmed payment does not activate the subscription | `tests/test_service.py::test_ac_001_unconfirmed_payment_does_not_activate` |
+| AC-002 | A confirmed payment activates the subscription | `tests/test_service.py::test_ac_002_confirmed_payment_activates` |
 
-This project is currently a minimal scaffold and can be expanded with application code, documentation, or automation as needed.
+**Known defect (deliberate):** `BillingService.activate` only refuses *failed*
+payments, so a *pending* (unconfirmed) payment still activates the subscription.
+AC-001 fails until the agent fixes `app/billing/service.py` (TASK-002).
 
-## Getting started
+## Run the tests
 
-1. Clone the repository.
-2. Review the project files and add the code or configuration you need.
-3. Update this README as the project evolves.
+```
+python -m pip install pytest
+python -m pytest -q
+```
 
-## Notes
-
-This README was added as a starting point for the repository and can be customized for the intended use case.
+Expected before the fix: 1 failed (AC-001, the pending case), everything else passes.
