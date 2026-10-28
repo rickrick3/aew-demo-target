@@ -13,7 +13,7 @@ class BillingService:
         """
         if subscription.status is SubscriptionStatus.ACTIVE:
             return subscription
-        if payment.status is PaymentStatus.FAILED:
+        if payment.status is not PaymentStatus.CONFIRMED:
             return subscription
         subscription.status = SubscriptionStatus.ACTIVE
         subscription.activated_at = now or datetime.now(timezone.utc)
